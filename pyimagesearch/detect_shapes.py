@@ -28,8 +28,8 @@ def detectgambar(file):
 
     # find contours in the thresholded image and initialize the
     # shape detector
-    cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
-        cv2.CHAIN_APPROX_SIMPLE)
+    thresh = 255 - thresh
+    cnts = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     sd = ShapeDetector()
 
@@ -40,6 +40,7 @@ def detectgambar(file):
         M = cv2.moments(c)
         cX = int((M["m10"] / M["m00"]) * ratio)
         cY = int((M["m01"] / M["m00"]) * ratio)
+
         shape = sd.detect(c)
 
         # multiply the contour (x, y)-coordinates by the resize ratio,
@@ -54,7 +55,7 @@ def detectgambar(file):
             cv2.drawContours(image, [c], -1, (0, 255, 0), 2)
 
         cv2.putText(image, shape, (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
-                    0.5, (255, 255, 255), 2)
+                    0.5, (0, 0, 255), 2)
 
         # show the output image
         cv2.imshow("Image", image)
